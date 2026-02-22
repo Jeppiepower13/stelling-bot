@@ -7,6 +7,9 @@ module.exports = {
 
     async execute(interaction) {
 
+        // 🔥 DIRECT ACKNOWLEDGE
+        await interaction.deferReply({ flags: 64 });
+
         const embed = new EmbedBuilder()
             .setColor(0x2b2d31)
             .setTitle('📘 Stelling Bot - Help')
@@ -42,6 +45,6 @@ module.exports = {
             )
             .setFooter({ text: 'Stelling Bot • Speelt de Stellingen van OVB' });
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.editReply({ embeds: [embed], });
     }
 };
