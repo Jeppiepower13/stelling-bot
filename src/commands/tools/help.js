@@ -45,6 +45,6 @@ module.exports = {
             )
             .setFooter({ text: 'Stelling Bot • Speelt de Stellingen van OVB' });
 
-        await interaction.editReply({ embeds: [embed], });
+        await interaction.editReply({ embeds: [embed] });
     }
 };
