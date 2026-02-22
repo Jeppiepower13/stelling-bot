@@ -5,22 +5,23 @@ module.exports = {
 
         try {
 
-            // ================= SLASH COMMANDS =================
             if (interaction.isChatInputCommand()) {
 
                 const command = client.commands.get(interaction.commandName);
                 if (!command) return;
 
-                // 🔥 BELANGRIJK: DIRECT ACKNOWLEDGE
-                if (!interaction.deferred && !interaction.replied) {
+                try {
                     await interaction.deferReply();
+                } catch (err) {
+                    // 🔥 Ignore Unknown interaction (Render wake-up issue)
+                    if (err.code === 10062) return;
+                    throw err;
                 }
 
                 await command.execute(interaction);
                 return;
             }
 
-            // ================= BUTTONS =================
             if (interaction.isButton()) {
 
                 const stellingCommand = client.commands.get('stelling');
@@ -29,9 +30,11 @@ module.exports = {
                 const activePoll = stellingCommand.getActivePoll(interaction.guild.id);
                 if (!activePoll) return;
 
-                // 🔥 DIRECT ACKNOWLEDGE BUTTON
-                if (!interaction.deferred && !interaction.replied) {
+                try {
                     await interaction.deferReply({ flags: 64 });
+                } catch (err) {
+                    if (err.code === 10062) return;
+                    throw err;
                 }
 
                 const [type] = interaction.customId.split('_');
@@ -53,17 +56,7 @@ module.exports = {
             }
 
         } catch (error) {
-
             console.error("Interaction error:", error);
-
-            if (!interaction.replied && !interaction.deferred) {
-                try {
-                    await interaction.reply({
-                        content: '❌ Er is een fout opgetreden.',
-                        flags: 64
-                    });
-                } catch {}
-            }
         }
     }
 };
