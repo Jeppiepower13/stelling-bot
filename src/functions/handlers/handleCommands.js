@@ -8,6 +8,10 @@ module.exports = (client) => {
 
         console.log("🔄 Guild commands worden opnieuw geregistreerd...");
 
+        console.log("CLIENT_ID:", process.env.CLIENT_ID);
+        console.log("GUILD_ID:", process.env.GUILD_ID);
+        console.log("TOKEN exists:", process.env.TOKEN ? "YES" : "NO");
+
         const commandsPath = path.join(__dirname, "../../commands");
         const commandFolders = fs.readdirSync(commandsPath);
 
@@ -43,7 +47,7 @@ module.exports = (client) => {
             }
         }
 
-        // ================= REGISTER TO DISCORD =================
+        console.log("📦 Totaal commands:", client.commandArray.length);
 
         const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
 
@@ -71,7 +75,13 @@ module.exports = (client) => {
                 { body: client.commandArray }
             );
 
-            console.log(`✅ Guild commands succesvol geladen! (${data.length})`);
+            console.log("DEBUG response van Discord:", data);
+
+            if (!data) {
+                console.log("⚠️ data is undefined");
+            } else {
+                console.log(`✅ Guild commands succesvol geladen! (${data.length})`);
+            }
 
         } catch (error) {
 
