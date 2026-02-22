@@ -43,8 +43,13 @@ module.exports = {
             )
             .setFooter({ text: 'Stelling Bot • Speelt de Stellingen van OVB' });
 
-        await interaction.editReply({
-            embeds: [embed]
-        });
+        try {
+            await interaction.reply({
+                embeds: [embed],
+                flags: 64
+            });
+        } catch (err) {
+            console.log("Interaction expired (cold start).");
+        }
     }
 };

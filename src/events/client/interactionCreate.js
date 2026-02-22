@@ -3,60 +3,64 @@ module.exports = {
 
     async execute(interaction, client) {
 
-        try {
+        // ================= SLASH COMMANDS =================
+        if (interaction.isChatInputCommand()) {
 
-            if (interaction.isChatInputCommand()) {
+            const command = client.commands.get(interaction.commandName);
+            if (!command) return;
 
-                const command = client.commands.get(interaction.commandName);
-                if (!command) return;
-
-                try {
-                    await interaction.deferReply();
-                } catch (err) {
-                    // 🔥 Ignore Unknown interaction (Render wake-up issue)
-                    if (err.code === 10062) return;
-                    throw err;
-                }
-
+            try {
                 await command.execute(interaction);
-                return;
+            } catch (error) {
+
+                console.error("Command error:", error);
+
+                // Alleen antwoorden als nog niet beantwoord
+                if (!interaction.replied && !interaction.deferred) {
+                    try {
+                        await interaction.reply({
+                            content: '❌ Er ging iets mis.',
+                            flags: 64
+                        });
+                    } catch {}
+                }
             }
 
-            if (interaction.isButton()) {
+            return;
+        }
 
-                const stellingCommand = client.commands.get('stelling');
-                if (!stellingCommand) return;
+        // ================= BUTTONS =================
+        if (interaction.isButton()) {
 
-                const activePoll = stellingCommand.getActivePoll(interaction.guild.id);
-                if (!activePoll) return;
+            const stellingCommand = client.commands.get('stelling');
+            if (!stellingCommand) return;
 
-                try {
-                    await interaction.deferReply({ flags: 64 });
-                } catch (err) {
-                    if (err.code === 10062) return;
-                    throw err;
-                }
+            const activePoll = stellingCommand.getActivePoll(interaction.guild.id);
+            if (!activePoll) return;
 
-                const [type] = interaction.customId.split('_');
-                const userId = interaction.user.id;
+            const [type] = interaction.customId.split('_');
+            const userId = interaction.user.id;
 
-                activePoll.eens.delete(userId);
-                activePoll.oneens.delete(userId);
+            activePoll.eens.delete(userId);
+            activePoll.oneens.delete(userId);
 
-                if (type === 'eens') activePoll.eens.add(userId);
-                if (type === 'oneens') activePoll.oneens.add(userId);
+            if (type === 'eens') activePoll.eens.add(userId);
+            if (type === 'oneens') activePoll.oneens.add(userId);
 
-                await interaction.editReply({
-                    content: '✅ Je stem is geregistreerd!'
+            try {
+                await interaction.reply({
+                    content: '✅ Je stem is geregistreerd!',
+                    flags: 64
                 });
 
+                // Verwijder na 3 seconden
                 setTimeout(async () => {
                     try { await interaction.deleteReply(); } catch {}
                 }, 3000);
-            }
 
-        } catch (error) {
-            console.error("Interaction error:", error);
+            } catch (error) {
+                console.error("Button error:", error);
+            }
         }
     }
 };
