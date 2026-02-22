@@ -1,3 +1,4 @@
+console.log("NIEUWE HELP.JS WORDT GEBRUIKT");
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
