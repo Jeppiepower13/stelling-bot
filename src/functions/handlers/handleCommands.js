@@ -6,19 +6,13 @@ module.exports = (client) => {
 
     client.handleCommands = async () => {
 
-        console.log("🔄 Guild commands worden opnieuw geregistreerd...");
-
-        console.log("CLIENT_ID:", process.env.CLIENT_ID);
-        console.log("GUILD_ID:", process.env.GUILD_ID);
-        console.log("TOKEN exists:", process.env.TOKEN ? "YES" : "NO");
+        console.log("🌍 Global commands worden geregistreerd...");
 
         const commandsPath = path.join(__dirname, "../../commands");
         const commandFolders = fs.readdirSync(commandsPath);
 
         client.commands.clear();
         client.commandArray = [];
-
-        // ================= LOAD COMMAND FILES =================
 
         for (const folder of commandFolders) {
 
@@ -30,15 +24,11 @@ module.exports = (client) => {
             for (const file of commandFiles) {
 
                 const filePath = path.join(folderPath, file);
-
                 delete require.cache[require.resolve(filePath)];
 
                 const command = require(filePath);
 
-                if (!command.data || !command.execute) {
-                    console.warn(`⚠️ Ongeldige command file: ${file}`);
-                    continue;
-                }
+                if (!command.data || !command.execute) continue;
 
                 client.commands.set(command.data.name, command);
                 client.commandArray.push(command.data.toJSON());
@@ -53,23 +43,16 @@ module.exports = (client) => {
 
         try {
 
-            console.log("📡 Commands worden naar Discord gestuurd...");
-
             const data = await rest.put(
-                Routes.applicationGuildCommands(
-                    process.env.CLIENT_ID,
-                    process.env.GUILD_ID
-                ),
+                Routes.applicationCommands(process.env.CLIENT_ID),
                 { body: client.commandArray }
             );
 
-            console.log(`✅ Guild commands succesvol geladen! (${data.length})`);
+            console.log(`✅ Global commands succesvol geladen! (${data.length})`);
 
         } catch (error) {
-
             console.error("❌ Fout bij registreren van commands:");
             console.error(error);
-
         }
     };
 };
