@@ -53,18 +53,6 @@ module.exports = (client) => {
 
         try {
 
-            console.log("🧹 Oude guild commands worden verwijderd...");
-
-            await rest.put(
-                Routes.applicationGuildCommands(
-                    process.env.CLIENT_ID,
-                    process.env.GUILD_ID
-                ),
-                { body: [] }
-            );
-
-            console.log("✔ Oude commands verwijderd");
-
             console.log("📡 Commands worden naar Discord gestuurd...");
 
             const data = await rest.put(
@@ -75,13 +63,7 @@ module.exports = (client) => {
                 { body: client.commandArray }
             );
 
-            console.log("DEBUG response van Discord:", data);
-
-            if (!data) {
-                console.log("⚠️ data is undefined");
-            } else {
-                console.log(`✅ Guild commands succesvol geladen! (${data.length})`);
-            }
+            console.log(`✅ Guild commands succesvol geladen! (${data.length})`);
 
         } catch (error) {
 
