@@ -1,0 +1,12 @@
+{
+  "898613183688892476": {
+    "stellingChannel": "1474815347357126828",
+    "autoStelling": {
+      "enabled": true,
+      "day": 0,
+      "hour": 11,
+      "minute": 0
+    },
+    "defaultPollDuration": 120
+  }
+}
