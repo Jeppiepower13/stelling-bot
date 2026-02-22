@@ -35,7 +35,7 @@ client.commandArray = [];
 
 // ================= LOAD HANDLERS =================
 
-const functionsPath = path.join(__dirname, "functions");
+const functionsPath = path.join(__dirname, "src/functions");
 const functionFolders = fs.readdirSync(functionsPath);
 
 for (const folder of functionFolders) {
@@ -62,4 +62,5 @@ client.on('messageCreate', (message) => {
 // ================= START BOT =================
 
 client.handleEvents();
+
 client.login(process.env.TOKEN);
