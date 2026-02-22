@@ -3,51 +3,66 @@ module.exports = {
 
     async execute(interaction, client) {
 
-        // ================= SLASH COMMANDS =================
-        if (interaction.isChatInputCommand()) {
+        try {
 
-            const command = client.commands.get(interaction.commandName);
-            if (!command) return;
+            // ================= SLASH COMMANDS =================
+            if (interaction.isChatInputCommand()) {
 
-            try {
+                const command = client.commands.get(interaction.commandName);
+                if (!command) return;
+
+                // 🔥 BELANGRIJK: DIRECT ACKNOWLEDGE
+                if (!interaction.deferred && !interaction.replied) {
+                    await interaction.deferReply();
+                }
+
                 await command.execute(interaction);
-            } catch (error) {
-                console.error("Command error:", error);
+                return;
             }
 
-            return;
-        }
+            // ================= BUTTONS =================
+            if (interaction.isButton()) {
 
-        // ================= BUTTONS =================
-        if (interaction.isButton()) {
+                const stellingCommand = client.commands.get('stelling');
+                if (!stellingCommand) return;
 
-            const stellingCommand = client.commands.get('stelling');
-            if (!stellingCommand) return;
+                const activePoll = stellingCommand.getActivePoll(interaction.guild.id);
+                if (!activePoll) return;
 
-            const activePoll = stellingCommand.getActivePoll(interaction.guild.id);
-            if (!activePoll) return;
+                // 🔥 DIRECT ACKNOWLEDGE BUTTON
+                if (!interaction.deferred && !interaction.replied) {
+                    await interaction.deferReply({ flags: 64 });
+                }
 
-            const [type] = interaction.customId.split('_');
-            const userId = interaction.user.id;
+                const [type] = interaction.customId.split('_');
+                const userId = interaction.user.id;
 
-            activePoll.eens.delete(userId);
-            activePoll.oneens.delete(userId);
+                activePoll.eens.delete(userId);
+                activePoll.oneens.delete(userId);
 
-            if (type === 'eens') activePoll.eens.add(userId);
-            if (type === 'oneens') activePoll.oneens.add(userId);
+                if (type === 'eens') activePoll.eens.add(userId);
+                if (type === 'oneens') activePoll.oneens.add(userId);
 
-            try {
-                await interaction.reply({
-                    content: '✅ Je stem is geregistreerd!',
-                    ephemeral: true
+                await interaction.editReply({
+                    content: '✅ Je stem is geregistreerd!'
                 });
 
                 setTimeout(async () => {
                     try { await interaction.deleteReply(); } catch {}
                 }, 3000);
+            }
 
-            } catch (error) {
-                console.error("Button error:", error);
+        } catch (error) {
+
+            console.error("Interaction error:", error);
+
+            if (!interaction.replied && !interaction.deferred) {
+                try {
+                    await interaction.reply({
+                        content: '❌ Er is een fout opgetreden.',
+                        flags: 64
+                    });
+                } catch {}
             }
         }
     }

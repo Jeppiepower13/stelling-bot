@@ -7,9 +7,6 @@ module.exports = {
 
     async execute(interaction) {
 
-        // 🔥 DIRECT ACKNOWLEDGE
-        await interaction.deferReply({ flags: 64 });
-
         const embed = new EmbedBuilder()
             .setColor(0x2b2d31)
             .setTitle('📘 Stelling Bot - Help')
@@ -33,8 +30,8 @@ module.exports = {
                 {
                     name: '🤖 Automatisch',
                     value:
-                        '`/setautostelling` - Stel de dag en tijd in voor automatische stellingen\n' +
-                        '`/autostelling` -  Zet automatische wekelijkse stelling aan of uit'
+                        '`/setautostelling` - Stel automatische stellingen in\n' +
+                        '`/autostelling` - Bekijk AutoStelling status'
                 },
                 {
                     name: 'ℹ️ Overig',
@@ -45,6 +42,8 @@ module.exports = {
             )
             .setFooter({ text: 'Stelling Bot • Speelt de Stellingen van OVB' });
 
-        await interaction.editReply({ embeds: [embed] });
+        await interaction.editReply({
+            embeds: [embed]
+        });
     }
 };
