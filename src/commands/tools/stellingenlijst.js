@@ -38,20 +38,25 @@ module.exports = {
             const stellingen = loadStellingen(guildId);
             const aantal = stellingen.length;
 
-            await interaction.reply({
-                content: `📋 Er staan nog **${aantal}** stelling(en) in de lijst.`,
-                flags: 64
-            });
+            if (!interaction.replied && !interaction.deferred) {
+                await interaction.reply({
+                    content: `📋 Er staan nog **${aantal}** stelling(en) in de lijst.`,
+                    flags: 64
+                });
+            }
 
         } catch (error) {
 
             console.error("Stellingenlijst error:", error);
 
-            if (!interaction.replied) {
-                await interaction.reply({
-                    content: '❌ Kon de lijst niet ophalen.',
-                    flags: 64
-                });
+            // 🔥 Belangrijk: geen dubbele reply meer
+            if (!interaction.replied && !interaction.deferred) {
+                try {
+                    await interaction.reply({
+                        content: '❌ Kon de lijst niet ophalen.',
+                        flags: 64
+                    });
+                } catch {}
             }
         }
     }
