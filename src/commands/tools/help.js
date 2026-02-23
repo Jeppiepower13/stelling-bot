@@ -1,4 +1,3 @@
-console.log("NIEUWE HELP.JS WORDT GEBRUIKT");
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
@@ -18,7 +17,8 @@ module.exports = {
                     value:
                         '`/stelling` - Start een nieuwe stelling\n' +
                         '`/stopstelling` - Stop de actieve stelling\n' +
-                        '`/addstelling` - Voeg een nieuwe stelling toe'
+                        '`/addstelling` - Voeg een nieuwe stelling toe\n' +
+                        '`/stellingenlijst` - Bekijk hoeveel stellingen er nog zijn'
                 },
                 {
                     name: '⚙️ Instellingen',
