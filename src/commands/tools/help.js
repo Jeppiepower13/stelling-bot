@@ -31,8 +31,8 @@ module.exports = {
                 {
                     name: '🤖 Automatisch',
                     value:
-                        '`/setautostelling` - Stel automatische stellingen in\n' +
-                        '`/autostelling` - Bekijk AutoStelling status'
+                        '`/setautostelling` - Stel dag & tijd in voor automatische stelling\n' +
+                        '`/autostelling` - zet de automatische stellingen aan/uit'
                 },
                 {
                     name: 'ℹ️ Overig',
