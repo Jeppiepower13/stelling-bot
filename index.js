@@ -63,4 +63,6 @@ client.on('messageCreate', (message) => {
 
 client.handleEvents();
 
+console.log("TOKEN exists:", process.env.TOKEN ? "YES" : "NO");
+
 client.login(process.env.TOKEN);
