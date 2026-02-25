@@ -35,6 +35,8 @@ client.commandArray = [];
 
 // ================= LOAD HANDLERS =================
 
+console.log("BESTAAT functionsPath?", fs.existsSync(functionsPath));
+
 const functionsPath = path.join(__dirname, "src/functions");
 const functionFolders = fs.readdirSync(functionsPath);
 
